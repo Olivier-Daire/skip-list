@@ -52,16 +52,17 @@ Node *insertNode(SkipList *list, int key, int value){
 	int i;
 	Node *temp;
 	// Array containing pointers to elements before the new one
-	Node *update[MAX_LEVEL+1];
+	Node *update[MAX_LEVEL-1];
 	temp = list->header;
 
-	/* Find where to put the data */
+	/* Find where to put the data equivalent to search */
     for (i = list->level; i >= 0; i--) {
         while (temp->nextNode[i] != NIL && temp->nextNode[i]->key < key){
             temp = temp->nextNode[i];
         }
         update[i] = temp;
     }
+
     temp = temp->nextNode[0];
 
     if (temp != NIL && temp->key == key){
@@ -93,25 +94,6 @@ Node *insertNode(SkipList *list, int key, int value){
     return temp;
 }
 
-Node *search(SkipList *list, int key){
-	int i;
-	Node *temp = list->header;
-
-	for (i = list->level; i >= 0; i--)
-	{
-		while(temp->nextNode[i]->key < key){
-			temp = temp->nextNode[i];
-		}
-	}
-	temp = temp->nextNode[0];
-	if (temp->key == key)
-	{
-		return temp;
-	} else {
-		return NIL;
-	}
-}
-
 Node *deleteNode(SkipList *list, int key){
 	int i;
 	Node *temp = list->header;
@@ -124,7 +106,9 @@ Node *deleteNode(SkipList *list, int key){
 		}
 		update[i] = temp;
 	}
+
 	temp = temp->nextNode[0];
+
 	if (temp->key == key)
 	{
 		for (i = 0; i <= list->level; i++)
@@ -146,7 +130,6 @@ Node *deleteNode(SkipList *list, int key){
 	return temp;
 }
 
-
 void printSkipList(SkipList *list){
 	Node *temp;
 	temp = list->header;
@@ -159,12 +142,25 @@ void printSkipList(SkipList *list){
     printf("NIL\n");
 }
 
-int randomLevel(){
-	int level = 0;
-	while (rand() < RAND_MAX/2 && level < MAX_LEVEL) {
-        level++;
+Node *search(SkipList *list, int key){
+	int i;
+	Node *temp = list->header;
+
+	for (i = list->level; i >= 0; i--)
+	{
+		while(temp->nextNode[i]->key < key){
+			temp = temp->nextNode[i];
+		}
 	}
-    return level;
+
+	temp = temp->nextNode[0];
+	
+	if (temp->key == key)
+	{
+		return temp;
+	} else {
+		return NIL;
+	}
 }
 
 void freeNode(Node *node){
@@ -172,4 +168,12 @@ void freeNode(Node *node){
 	{
 		free(node);
 	}
+}
+
+int randomLevel(){
+	int level = 0;
+	while (rand() < RAND_MAX/2 && level < MAX_LEVEL) {
+        level++;
+	}
+    return level;
 }
