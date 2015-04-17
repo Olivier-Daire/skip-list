@@ -103,7 +103,7 @@ Node *insertNode(SkipList *list, int key, int value){
     	temp->value = value;
     	return temp;
     } else {
-    	int newLevel = randomLevel();
+    	int newLevel = randomLevel(1/4, MAX_LEVEL);
 
     	if (newLevel > list->level)
     	{
@@ -204,9 +204,9 @@ void freeNode(Node *node){
 	}
 }
 
-int randomLevel(){
+int randomLevel(int p, int maxLevel){
 	int level = 0;
-	while (rand() < RAND_MAX/2 && level < MAX_LEVEL) {
+	while (rand() < p && level < maxLevel) {
         level++;
 	}
     return level;
