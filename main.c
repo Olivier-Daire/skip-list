@@ -1,27 +1,57 @@
+/**
+* Execute via
+* ./skip-list
+*      or
+* ./skip-list <path to a text file>
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "main.h"
 #define MAX_LEVEL 3
 #define NIL NULL
 #define MAX_INT 32767
+#define MAX_CHAR_FILE 1000
 
 int main(int argc, char const *argv[])
 {	
+
 	SkipList *list;
 	list = initList();
 
-	printf("---------------------Insert---------------------\n");
-	insertNode(list, 1, 10);
-	insertNode(list, 2, 2);
-	printSkipList(list);
+	// If executed with arguments, insert nodes from text file
+	if (argc > 1)
+	{
+		int i = 0;
+		int value;
+		FILE *file = fopen(argv[1], "r");
+		char buffer[MAX_CHAR_FILE];
 
-	printf("---------------------Delete key 1---------------------\n");
-	deleteNode(list, 1);
-	printSkipList(list);
+		while(fgets(buffer, MAX_CHAR_FILE, file) != NULL){
+			value = atoi(buffer);
+			insertNode(list, i, value);
+			i++;
+		}
+		fclose(file);
 
-	printf("---------------------Delete key 2---------------------\n");
-	deleteNode(list, 2);
-	printSkipList(list);
+		printf("---------------------Insert from file ---------------------\n");
+		printSkipList(list);
+
+	} else {
+
+		printf("---------------------Insert---------------------\n");
+		insertNode(list, 1, 10);
+		insertNode(list, 2, 2);
+		printSkipList(list);
+
+		printf("---------------------Delete key 1---------------------\n");
+		deleteNode(list, 1);
+		printSkipList(list);
+
+		printf("---------------------Delete key 2---------------------\n");
+		deleteNode(list, 2);
+		printSkipList(list);
+	}
 
 	free(list->header);
 	free(list);
@@ -46,6 +76,10 @@ SkipList *initList() {
 
     return list;
 }
+
+// SkipList *initializeFromFile(){
+
+// }
 
 /* Insert a new node */
 Node *insertNode(SkipList *list, int key, int value){
