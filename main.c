@@ -27,15 +27,21 @@ int main(int argc, char const *argv[])
 		FILE *file = fopen(argv[1], "r");
 		char buffer[MAX_CHAR_FILE];
 
-		while(fgets(buffer, MAX_CHAR_FILE, file) != NULL){
-			value = atoi(buffer);
-			insertNode(list, i, value);
-			i++;
-		}
-		fclose(file);
+		if (file == NULL)
+		{
+			printf("Error opening the file !\n");
+			exit (EXIT_FAILURE);
+		} else {
+			while(fgets(buffer, MAX_CHAR_FILE, file) != NULL){
+				value = atoi(buffer);
+				insertNode(list, i, value);
+				i++;
+			}
+			fclose(file);
 
-		printf("---------------------Insert from file ---------------------\n");
-		printSkipList(list);
+			printf("---------------------Insert from file ---------------------\n");
+			printSkipList(list);
+		}
 
 	} else {
 
@@ -43,6 +49,10 @@ int main(int argc, char const *argv[])
 		insertNode(list, 1, 10);
 		insertNode(list, 2, 2);
 		printSkipList(list);
+
+		printf("---------------------Search for key 1---------------------\n");
+		Node *toto = search(list, 1);
+		printf("Key value : %d\n", toto->value);
 
 		printf("---------------------Delete key 1---------------------\n");
 		deleteNode(list, 1);
@@ -90,19 +100,20 @@ Node *insertNode(SkipList *list, int key, int value){
 	temp = list->header;
 
 	/* Find where to put the data equivalent to search */
-    for (i = list->level; i >= 0; i--) {
-        while (temp->nextNode[i] != NIL && temp->nextNode[i]->key < key){
+    for (i = list->level ; i >= 0; i--) {
+        while (temp->nextNode[i] != NIL &&  temp->nextNode[i]->key < key){
             temp = temp->nextNode[i];
         }
         update[i] = temp;
     }
 
-    temp = temp->nextNode[0];
+	temp = temp->nextNode[0];
 
     if (temp != NIL && temp->key == key){
     	temp->value = value;
     	return temp;
-    } else {
+    } 
+    else {
     	int newLevel = randomLevel(1/4, MAX_LEVEL);
 
     	if (newLevel > list->level)
@@ -179,8 +190,8 @@ void printSkipList(SkipList *list){
 Node *search(SkipList *list, int key){
 	int i;
 	Node *temp = list->header;
-
-	for (i = list->level; i >= 0; i--)
+	
+	for (i = list->level; i > 0; i--)
 	{
 		while(temp->nextNode[i]->key < key){
 			temp = temp->nextNode[i];
