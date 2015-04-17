@@ -61,9 +61,9 @@ int main(int argc, char const *argv[])
 /* Initialize list */
 SkipList *initList() {
 	int i;
-	SkipList *list = malloc(sizeof(SkipList));
+	SkipList *list = calloc(1, sizeof(SkipList));
 
-    if ((list->header = malloc(sizeof(Node) + MAX_LEVEL*sizeof(Node *))) == 0) {
+    if ((list->header = calloc(1, sizeof(Node) + MAX_LEVEL*sizeof(Node *))) == 0) {
         printf ("Error during memory allocation\n");
         exit (EXIT_FAILURE);
     }
@@ -113,7 +113,7 @@ Node *insertNode(SkipList *list, int key, int value){
     		list->level = newLevel;
     	}
 
-    	temp = malloc(sizeof(Node) + sizeof(Node*) * (newLevel));
+    	temp = calloc(1, sizeof(Node) + sizeof(Node*) * (newLevel));
     	temp->key = key;
     	temp->value = value;
 
