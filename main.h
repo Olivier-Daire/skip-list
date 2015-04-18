@@ -10,6 +10,7 @@ typedef struct{
 } SkipList;
 
 SkipList *initList();
+void initializeFromFile(SkipList *list, char const * path);
 Node *insertNode(SkipList *list, int key, int value);
 Node *deleteNode(SkipList *list, int key);
 void printSkipList(SkipList *list);

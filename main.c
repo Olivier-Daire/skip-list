@@ -15,34 +15,16 @@
 
 int main(int argc, char const *argv[])
 {	
-
 	SkipList *list;
 	list = initList();
 
 	// If executed with arguments, insert nodes from text file
 	if (argc > 1)
 	{
-		int i = 0;
-		int value;
-		FILE *file = fopen(argv[1], "r");
-		char buffer[MAX_CHAR_FILE];
-
-		if (file == NULL)
-		{
-			printf("Error opening the file !\n");
-			exit (EXIT_FAILURE);
-		} else {
-			while(fgets(buffer, MAX_CHAR_FILE, file) != NULL){
-				value = atoi(buffer);
-				insertNode(list, i, value);
-				i++;
-			}
-			fclose(file);
-
-			printf("---------------------Insert from file ---------------------\n");
-			printSkipList(list);
-		}
-
+		initializeFromFile(list, argv[1]);
+		printf("---------------------Insert from file ---------------------\n");
+		printSkipList(list);
+		
 	} else {
 
 		printf("---------------------Insert---------------------\n");
@@ -87,9 +69,25 @@ SkipList *initList() {
     return list;
 }
 
-// SkipList *initializeFromFile(){
+void initializeFromFile(SkipList *list, char const * path){
+	int i = 0;
+	int value;
+	FILE *file = fopen(path, "r");
+	char buffer[MAX_CHAR_FILE];
 
-// }
+	if (file == NULL)
+	{
+		printf("Error opening the file !\n");
+		exit (EXIT_FAILURE);
+	} else {
+		while(fgets(buffer, MAX_CHAR_FILE, file) != NULL){
+			value = atoi(buffer);
+			insertNode(list, i, value);
+			i++;
+		}
+		fclose(file);
+	}
+}
 
 /* Insert a new node */
 Node *insertNode(SkipList *list, int key, int value){
@@ -99,7 +97,7 @@ Node *insertNode(SkipList *list, int key, int value){
 	Node *update[MAX_LEVEL-1];
 	temp = list->header;
 
-	/* Find where to put the data equivalent to search */
+	/* Find where to put the data, equivalent to search */
     for (i = list->level ; i >= 0; i--) {
         while (temp->nextNode[i] != NIL &&  temp->nextNode[i]->key < key){
             temp = temp->nextNode[i];
@@ -109,11 +107,15 @@ Node *insertNode(SkipList *list, int key, int value){
 
 	temp = temp->nextNode[0];
 
+	// If duplicate key, replace it
     if (temp != NIL && temp->key == key){
+    	
     	temp->value = value;
+    	
     	return temp;
-    } 
-    else {
+
+    } else {
+
     	int newLevel = randomLevel(1/4, MAX_LEVEL);
 
     	if (newLevel > list->level)
@@ -134,6 +136,7 @@ Node *insertNode(SkipList *list, int key, int value){
     		temp->nextNode[i] = update[i]->nextNode[i];
     		update[i]->nextNode[i] = temp;
     	}
+
     }
 
     return temp;
