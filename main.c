@@ -28,13 +28,19 @@ int main(int argc, char const *argv[])
 	} else {
 
 		printf("---------------------Insert---------------------\n");
-		insertNode(&list, 1, 10);
-		insertNode(&list, 2, 2);
+		insertNode(&list, 1, 1);
+		insertNode(&list, 2, 20);
 		printSkipList(&list);
 
-		printf("---------------------Search for key 1---------------------\n");
-		Node *toto = search(&list, 1);
-		printf("Key value : %d\n", toto->value);
+		printf("---------------------Search for key 2---------------------\n");
+		Node *toto = search(&list, 2);
+		if (toto != NIL)
+		{
+			printf("Key value : %d\n", toto->value);
+		} else {
+			printf("Not found !\n");
+		}
+		
 
 		printf("---------------------Delete key 1---------------------\n");
 		deleteNode(&list, 1);
@@ -194,7 +200,7 @@ Node *search(SkipList *list, int key){
 	int i;
 	Node *temp = list->header;
 	
-	for (i = list->level; i > 0; i--)
+	for (i = list->level; i >= 0; i--)
 	{
 		while(temp->nextNode[i]->key < key){
 			temp = temp->nextNode[i];
