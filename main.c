@@ -15,58 +15,57 @@
 
 int main(int argc, char const *argv[])
 {	
-	SkipList *list;
-	list = initList();
+	SkipList list;
+	initList(&list);
 
 	// If executed with arguments, insert nodes from text file
 	if (argc > 1)
 	{
-		initializeFromFile(list, argv[1]);
+		initializeFromFile(&list, argv[1]);
 		printf("---------------------Insert from file ---------------------\n");
-		printSkipList(list);
+		printSkipList(&list);
 		
 	} else {
 
 		printf("---------------------Insert---------------------\n");
-		insertNode(list, 1, 10);
-		insertNode(list, 2, 2);
-		printSkipList(list);
+		insertNode(&list, 1, 10);
+		insertNode(&list, 2, 2);
+		printSkipList(&list);
 
 		printf("---------------------Search for key 1---------------------\n");
-		Node *toto = search(list, 1);
+		Node *toto = search(&list, 1);
 		printf("Key value : %d\n", toto->value);
 
 		printf("---------------------Delete key 1---------------------\n");
-		deleteNode(list, 1);
-		printSkipList(list);
+		deleteNode(&list, 1);
+		printSkipList(&list);
 
 		printf("---------------------Delete key 2---------------------\n");
-		deleteNode(list, 2);
-		printSkipList(list);
+		deleteNode(&list, 2);
+		printSkipList(&list);
 	}
 
-	free(list->header);
-	free(list);
+	free(list.header->nextNode);
+	free(list.header);	
 	return 0;
 }
 
 /* Initialize list */
-SkipList *initList() {
+void initList(SkipList *list){
 	int i;
-	SkipList *list = calloc(1, sizeof(SkipList));
+	list->header = calloc(1, sizeof(Node));
+	list->header->key = MAX_INT;
 
-    if ((list->header = calloc(1, sizeof(Node) + MAX_LEVEL*sizeof(Node *))) == 0) {
+    if ((list->header->nextNode = calloc(2, sizeof(Node*) * MAX_LEVEL)) == 0) {
         printf ("Error during memory allocation\n");
         exit (EXIT_FAILURE);
     }
 
-    list->header->key = MAX_INT;
     for (i = 0; i <= MAX_LEVEL; i++){
         list->header->nextNode[i] = NIL;
     }
     list->level = 0;
 
-    return list;
 }
 
 void initializeFromFile(SkipList *list, char const * path){
@@ -82,7 +81,7 @@ void initializeFromFile(SkipList *list, char const * path){
 	} else {
 		while(fgets(buffer, MAX_CHAR_FILE, file) != NULL){
 			value = atoi(buffer);
-			insertNode(list, i, value);
+			insertNode(list, value, value);
 			i++;
 		}
 		fclose(file);
@@ -126,9 +125,10 @@ Node *insertNode(SkipList *list, int key, int value){
     		list->level = newLevel;
     	}
 
-    	temp = calloc(1, sizeof(Node) + sizeof(Node*) * (newLevel));
+    	temp = calloc(1, sizeof(Node));
     	temp->key = key;
     	temp->value = value;
+    	temp->nextNode = calloc(1, sizeof(Node*) * (newLevel+1));
 
     	// Update links
     	for (i = 0; i <= newLevel; i++)
@@ -214,6 +214,7 @@ Node *search(SkipList *list, int key){
 void freeNode(Node *node){
 	if (node)
 	{
+		free(node->nextNode);
 		free(node);
 	}
 }

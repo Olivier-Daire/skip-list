@@ -1,7 +1,7 @@
 typedef struct Node{
     int key;
     int value;
-    struct Node *nextNode[1];
+    struct Node **nextNode;
 } Node;
 
 typedef struct{
@@ -9,7 +9,7 @@ typedef struct{
     int level;
 } SkipList;
 
-SkipList *initList();
+void initList(SkipList *list);
 void initializeFromFile(SkipList *list, char const * path);
 Node *insertNode(SkipList *list, int key, int value);
 Node *deleteNode(SkipList *list, int key);
