@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "main.h"
 #define MAX_LEVEL 3
 #define NIL NULL
@@ -77,6 +78,7 @@ void initList(SkipList *list){
 void initializeFromFile(SkipList *list, char const * path){
 	int i = 0;
 	int value;
+	int key;
 	FILE *file = fopen(path, "r");
 	char buffer[MAX_CHAR_FILE];
 
@@ -86,8 +88,24 @@ void initializeFromFile(SkipList *list, char const * path){
 		exit (EXIT_FAILURE);
 	} else {
 		while(fgets(buffer, MAX_CHAR_FILE, file) != NULL){
-			value = atoi(buffer);
-			insertNode(list, value, value);
+			
+			// if it's a comma separated file (CSV for example)
+			if (strstr(buffer, ",") != NULL)
+			{
+				key = atoi(strtok(buffer, ","));
+				printf("key %d\n", key);
+
+				value = atoi(strtok(NULL, ","));
+				printf("value %d\n", value);
+
+			} else {
+				// simple text file : each value on a new line
+				value = atoi(buffer);
+				key = value;
+			}
+			
+			insertNode(list, key, value);
+
 			i++;
 		}
 		fclose(file);
