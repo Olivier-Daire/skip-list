@@ -29,15 +29,21 @@ int main(int argc, char const *argv[])
 	} else {
 
 		printf("---------------------Insert---------------------\n");
-		insertNode(&list, 1, 1);
-		insertNode(&list, 2, 20);
+		insertNode(&list, 2, 1);
+		insertNode(&list, 5, 42);
+		insertNode(&list, 7, 3);
+		insertNode(&list, 3, 20);
+		insertNode(&list, 21, 12);
+		insertNode(&list, 23, 22);
+		insertNode(&list, 17, 43);
+		insertNode(&list, 31, 21);
 		printSkipList(&list);
 
 		printf("---------------------Search for key 2---------------------\n");
-		Node *toto = search(&list, 2);
-		if (toto != NIL)
+		Node *searched = search(&list, 3);
+		if (searched != NIL)
 		{
-			printf("Key value : %d\n", toto->value);
+			printf("Key value : %d\n", searched->value);
 		} else {
 			printf("Not found !\n");
 		}
@@ -148,6 +154,8 @@ Node *insertNode(SkipList *list, int key, int value){
     		}
     		list->level = newLevel;
     	}
+
+    	printf("level of node %d = %d\n",key, newLevel);
 
     	temp = calloc(1, sizeof(Node));
     	temp->key = key;
