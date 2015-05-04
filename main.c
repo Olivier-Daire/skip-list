@@ -39,7 +39,7 @@ int main(int argc, char const *argv[])
 		insertNode(&list, 31, 21);
 		printSkipList(&list);
 
-		printf("---------------------Search for key 2---------------------\n");
+		printf("---------------------Search for key 3---------------------\n");
 		Node *searched = search(&list, 3);
 		if (searched != NIL)
 		{
@@ -49,17 +49,19 @@ int main(int argc, char const *argv[])
 		}
 		
 
-		printf("---------------------Delete key 1---------------------\n");
-		deleteNode(&list, 1);
+		printf("---------------------Delete key 5---------------------\n");
+		deleteNode(&list, 5);
 		printSkipList(&list);
 
 		printf("---------------------Delete key 2---------------------\n");
 		deleteNode(&list, 2);
 		printSkipList(&list);
+
 	}
 
-	free(list.header->nextNode);
-	free(list.header);	
+	freeList(&list);
+	//free(list.header->nextNode);
+	//free(list.header);	
 	return 0;
 }
 
@@ -95,14 +97,12 @@ void initializeFromFile(SkipList *list, char const * path){
 	} else {
 		while(fgets(buffer, MAX_CHAR_FILE, file) != NULL){
 			
-			// if it's a comma separated file (CSV for example)
-			if (strstr(buffer, ",") != NULL)
+			// if it's a semicolon separated file (CSV for example)
+			if (strstr(buffer, ";") != NULL)
 			{
-				key = atoi(strtok(buffer, ","));
-				printf("key %d\n", key);
+				key = atoi(strtok(buffer, ";"));
 
-				value = atoi(strtok(NULL, ","));
-				printf("value %d\n", value);
+				value = atoi(strtok(NULL, ";"));
 
 			} else {
 				// simple text file : each value on a new line
@@ -154,8 +154,6 @@ Node *insertNode(SkipList *list, int key, int value){
     		}
     		list->level = newLevel;
     	}
-
-    	printf("level of node %d = %d\n",key, newLevel);
 
     	temp = calloc(1, sizeof(Node));
     	temp->key = key;
@@ -251,6 +249,19 @@ void freeNode(Node *node){
 	}
 }
 
+void freeList(SkipList *list){
+	Node *temp = list->header;
+	while(temp->nextNode[0] != NIL){
+		deleteNode(list, temp->nextNode[0]->key);
+	}
+	freeNode(temp);
+}
+
+/**
+* The smaller p will be, the lesser the number of level is gonna be. Thus, the search is gonna take longer (on average O(log n)) 
+* but insertion and deletion will be a little bit quicker because they have to update the list and it will be faster on a list with only few levels
+*
+*/
 int randomLevel(int p, int maxLevel){
 	int level = 0;
 	while (rand() < p && level < maxLevel) {

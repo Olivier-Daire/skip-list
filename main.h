@@ -16,4 +16,5 @@ Node *deleteNode(SkipList *list, int key);
 void printSkipList(SkipList *list);
 Node *search(SkipList *list, int key);
 void freeNode(Node *node);
+void freeList(SkipList *list);
 int randomLevel(int p, int maxLevel);
