@@ -60,8 +60,7 @@ int main(int argc, char const *argv[])
 	}
 
 	freeList(&list);
-	//free(list.header->nextNode);
-	//free(list.header);	
+
 	return 0;
 }
 
