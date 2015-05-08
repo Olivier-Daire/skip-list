@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "main.h"
 #define MAX_LEVEL 3
 #define NIL NULL
@@ -18,6 +19,7 @@ int main(int argc, char const *argv[])
 {	
 	SkipList list;
 	initList(&list);
+	srand(time(NULL));
 
 	// If executed with arguments, insert nodes from text file
 	if (argc > 1)
@@ -153,7 +155,7 @@ Node *insertNode(SkipList *list, int key, int value){
     		}
     		list->level = newLevel;
     	}
-
+    	
     	temp = calloc(1, sizeof(Node));
     	temp->key = key;
     	temp->value = value;
